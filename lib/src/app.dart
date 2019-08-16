@@ -1,0 +1,37 @@
+import 'package:ch_app/src/blocs/blocs.dart';
+import 'package:ch_app/src/ui/login_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'data/repositories.dart';
+import 'ui/login_screen.dart';
+import 'ui/main_screen.dart';
+import 'ui/challenge_screen.dart';
+import 'ui/mood_screen.dart';
+import 'ui/issue_screen.dart';
+
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.green,
+        accentColor: Colors.white,
+        brightness: Brightness.dark,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(),
+        '/main': (context) => MainScreen(),
+        '/challenges': (context) => BlocProvider(
+              builder: (context) => ChallengeBloc(
+                  challengeRepository:
+                      RepositoryProvider.of<ChallengeRepository>(context)),
+              child: ChallengeScreen(),
+            ),
+        '/moods': (context) => MoodScreen(),
+        '/issues': (context) => IssueScreen(),
+      },
+    );
+  }
+}

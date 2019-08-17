@@ -51,6 +51,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
               ? _buildRewardBoard(rewards)
               : _buildChallengeList(challenges, challengeBloc);
         }
+        return null;
       })),
     );
   }

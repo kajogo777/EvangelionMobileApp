@@ -94,7 +94,12 @@ class Scripture {
         verseIndexes = data['verse_indexes'].cast<int>();
 
   String getText() {
-    return this.verseText.reduce((a, b) => a + b);
+    String text = "";
+    for (int i = 0; i < verseText.length; i++) {
+      text += i > 0 ? " " : "";
+      text += "${this.verseIndexes[i]} ${this.verseText[i]}";
+    }
+    return text;
   }
 
   Scripture copy() {

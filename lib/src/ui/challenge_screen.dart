@@ -146,6 +146,13 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   }
 
   Widget _buildChallengeList(List<Challenge> challenges, challengeBloc) {
+    if (challenges.length == 0) {
+      return Text.rich(
+          TextSpan(
+            text: "No Challenges Available",
+          ),
+          textAlign: TextAlign.center);
+    }
     return ListView.builder(
       padding: const EdgeInsets.all(5.0),
       itemCount: challenges.length,

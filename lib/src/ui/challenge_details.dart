@@ -81,7 +81,15 @@ class ChallengeDetails extends StatelessWidget {
                   Divider(color: Theme.of(context).accentColor),
                   Text.rich(
                       TextSpan(
-                        text: challenge.scripture.getText(),
+                        text: challenge.scripture.getText() + "\n",
+                      ),
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 17.0)),
+                  Text.rich(
+                      TextSpan(
+                        text: challenge.scripture.reference,
                       ),
                       textAlign: TextAlign.center,
                       style: TextStyle(

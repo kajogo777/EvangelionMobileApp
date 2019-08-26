@@ -19,8 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (isValidCode) {
       await SecureStorageService.setAccessCode(code);
       Navigator.pushReplacementNamed(context, '/main');
-      // FOR TESTING TODO REMOVE
-      // SecureStorageService.clear();
     } else {
       Scaffold.of(scaffoldContext).showSnackBar(new SnackBar(
         backgroundColor: Colors.redAccent,
@@ -30,19 +28,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _skipLogin() async {
-    // FOR DEVELOPMENT TODO REMOVE
-    await SecureStorageService.setAccessCode("aKUDrnWyTV");
-    if (await SecureStorageService.accessCodeExists()) {
-      Navigator.pushReplacementNamed(context, '/main');
-      // FOR TESTING TODO REMOVE
-      // SecureStorageService.clear();
-    }
+    final code = await SecureStorageService.getAccessCode();
+    if (code != null) {
+      if (await UserNetworkService.isValidCode(code)) {
+        Navigator.pushReplacementNamed(context, '/main');
+      }
+    } else
+      print("access code not available");
   }
 
   @override
   void initState() {
     super.initState();
-    SecureStorageService.clear();
     _skipLogin();
   }
 

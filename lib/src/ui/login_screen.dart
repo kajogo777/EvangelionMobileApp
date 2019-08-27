@@ -8,7 +8,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _showScanCodeButton = false;
+
   _scanBarCode(context, scaffoldContext) async {
+    setState(() {
+      _showScanCodeButton = false;
+    });
+
     String code = await FlutterBarcodeScanner.scanBarcode(
         "#" + Theme.of(context).primaryColor.value.toRadixString(16),
         "Cancel",
@@ -24,17 +30,21 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.redAccent,
         content: new Text("Ops! Invalid Code"),
       ));
+      setState(() {
+        _showScanCodeButton = true;
+      });
     }
   }
 
   _skipLogin() async {
     final code = await SecureStorageService.getAccessCode();
-    if (code != null) {
-      if (await UserNetworkService.isValidCode(code)) {
-        Navigator.pushReplacementNamed(context, '/main');
-      }
-    } else
-      print("access code not available");
+    if (code != null && await UserNetworkService.isValidCode(code)) {
+      Navigator.pushReplacementNamed(context, '/main');
+    } else {
+      setState(() {
+        _showScanCodeButton = true;
+      });
+    }
   }
 
   @override
@@ -70,13 +80,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     Expanded(
                       child: Container(),
                     ),
-                    RaisedButton(
-                        onPressed: () {
-                          _scanBarCode(context, scaffoldContext);
-                        },
-                        child: Text('Scan Access Code',
-                            style: TextStyle(fontSize: 20)),
-                        color: Colors.blue[900]),
+                    _showScanCodeButton
+                        ? RaisedButton(
+                            onPressed: () {
+                              _scanBarCode(context, scaffoldContext);
+                            },
+                            child: Text('Scan Access Code',
+                                style: TextStyle(fontSize: 20)),
+                            color: Colors.blue[900])
+                        : Expanded(
+                            child: Container(),
+                          ),
                     Stack(
                       alignment: Alignment.bottomLeft,
                       children: <Widget>[

@@ -4,7 +4,7 @@ import 'main_menu_item.dart';
 
 final menuItems = <ReadingModeItem>[
   new ReadingModeItem(
-      description: 'Ready for a biblical adeventure?',
+      description: 'Ready for a biblical adventure?',
       title: 'DAILY CHALLENGE',
       path: '/challenges',
       imageUrl: 'assets/gideon.jpg',

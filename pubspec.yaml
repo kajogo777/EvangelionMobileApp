@@ -41,6 +41,7 @@ flutter_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/logo/AA_200.png"
+  image_path_ios: "assets/logo/A_full.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

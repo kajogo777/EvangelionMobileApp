@@ -58,6 +58,7 @@ class ChallengeDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     return Hero(
         flightShuttleBuilder: (
           BuildContext flightContext,
@@ -117,7 +118,30 @@ class ChallengeDetails extends StatelessWidget {
                               ),
                               textAlign: TextAlign.center,
                             )
-                          : null)
+                          : null),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(isIOS
+                                        ? Icons.arrow_back_ios
+                                        : Icons.arrow_back),
+                                    Text(
+                                      "Back",
+                                    )
+                                  ],
+                                ))
+                          ])
+                    ],
+                  ),
                 ]))));
   }
 }

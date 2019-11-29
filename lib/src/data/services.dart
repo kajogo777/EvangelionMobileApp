@@ -1,8 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'dart:convert';
 import '../models/challenge.dart';
+import '../models/user.dart';
 
 // const BASE_URL = "http://192.168.43.24:8000/api/";
 // const BASE_URL = "http://192.168.1.145:8000/api/";
@@ -17,6 +19,11 @@ class SecureStorageService {
   }
 
   static getAccessCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('first_run') ?? true) {
+      await SecureStorageService.clear();
+      prefs.setBool('first_run', false);
+    }
     return await _storage.read(key: "evangelionAccessCode");
   }
 
@@ -68,8 +75,9 @@ class UserNetworkService {
     return response.statusCode == 200;
   }
 
-  static fetchUser() async {
-    final user = NetworkService.getResource("users");
+  static Future<User> fetchUser() async {
+    final data = await NetworkService.getResource("users");
+    return User.fromJson(data[0]);
   }
 }
 

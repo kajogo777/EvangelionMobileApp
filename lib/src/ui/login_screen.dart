@@ -10,6 +10,58 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _showScanCodeButton = false;
 
+  Future<bool> _confirmUsername(context, name) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.blueAccent,
+          title: Text(
+            'Verify',
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: 'Are you ',
+                      ),
+                      TextSpan(
+                        text: name,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 17.0),
+                      ),
+                      TextSpan(
+                        text: ' ?',
+                      ),
+                    ]))
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   _scanBarCode(context, scaffoldContext) async {
     setState(() {
       _showScanCodeButton = false;
@@ -24,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (isValidCode) {
       await SecureStorageService.setAccessCode(code);
-      Navigator.pushReplacementNamed(context, '/main');
     } else {
       Scaffold.of(scaffoldContext).showSnackBar(new SnackBar(
         backgroundColor: Colors.redAccent,
@@ -33,7 +84,27 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _showScanCodeButton = true;
       });
+      return;
     }
+
+    final user = await UserNetworkService.fetchUser();
+
+    final confirmed = await _confirmUsername(context, user.name);
+
+    if (!confirmed) {
+      SecureStorageService.clear();
+
+      Scaffold.of(scaffoldContext).showSnackBar(new SnackBar(
+        backgroundColor: Colors.blueAccent,
+        content: new Text("Ops! Please Try Again"),
+      ));
+      setState(() {
+        _showScanCodeButton = true;
+      });
+      return;
+    }
+
+    Navigator.pushReplacementNamed(context, '/main');
   }
 
   _skipLogin() async {

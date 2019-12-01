@@ -74,9 +74,9 @@ class Challenge {
 
 class Scripture {
   final int chapter;
-  final String book;
-  final String reference;
-  final List<String> verseText;
+  final Map<String, String> book;
+  final Map<String, String> reference;
+  final Map<String, List<String>> verseText;
   final List<int> verseIndexes;
 
   Scripture(
@@ -88,16 +88,19 @@ class Scripture {
 
   Scripture.fromJson(Map<String, dynamic> data)
       : chapter = data['chapter'],
-        book = data['book'],
-        reference = data['reference'],
-        verseText = data['verse_text'].cast<String>(),
+        book = {'ar': data['book'], 'en': data['book_en']},
+        reference = {'ar': data['reference'], 'en': data['reference_en']},
+        verseText = {
+          'ar': data['verse_text'].cast<String>(),
+          'en': data['verse_text_en'].cast<String>()
+        },
         verseIndexes = data['verse_indexes'].cast<int>();
 
-  String getText() {
+  String getText(String lang) {
     String text = "";
-    for (int i = 0; i < verseText.length; i++) {
+    for (int i = 0; i < verseText[lang].length; i++) {
       text += i > 0 ? " " : "";
-      text += "${this.verseIndexes[i]} ${this.verseText[i]}";
+      text += "${this.verseIndexes[i]} ${this.verseText[lang][i]}";
     }
     return text;
   }
@@ -105,9 +108,9 @@ class Scripture {
   Scripture copy() {
     return Scripture(
         chapter: this.chapter,
-        book: this.book,
-        reference: this.reference,
-        verseText: new List<String>.from(this.verseText),
+        book: new Map.from(this.book),
+        reference: new Map.from(this.reference),
+        verseText: new Map.from(this.verseText),
         verseIndexes: new List<int>.from(this.verseIndexes));
   }
 }

@@ -8,6 +8,7 @@ import '../models/user.dart';
 
 // const BASE_URL = "http://192.168.43.24:8000/api/";
 // const BASE_URL = "http://192.168.1.145:8000/api/";
+// const BASE_URL = "http://10.0.2.2:8000/api/";
 const BASE_URL = "https://evangelion.stmary-rehab.com/api/";
 
 class SecureStorageService {

@@ -3,6 +3,57 @@ import '../models/challenge.dart';
 
 typedef AnswerCallback = Function(int answerId);
 
+class Reading extends StatefulWidget {
+  final Challenge challenge;
+  final String lang;
+
+  Reading({Key key, @required this.challenge, @required this.lang})
+      : super(key: key);
+
+  @override
+  _ReadingState createState() => _ReadingState();
+}
+
+class _ReadingState extends State<Reading> {
+  bool _show = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        FlatButton(
+            onPressed: () {
+              setState(() {
+                _show = !_show;
+              });
+            },
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <
+                Widget>[
+              Text.rich(
+                  TextSpan(
+                      text: widget.challenge.scripture.reference[widget.lang]),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0))
+            ])),
+        Visibility(
+            visible: _show,
+            child: Text.rich(
+                TextSpan(
+                  text: widget.challenge.scripture.getText(widget.lang),
+                ),
+                textDirection:
+                    widget.lang == "ar" ? TextDirection.rtl : TextDirection.ltr,
+                textAlign:
+                    widget.lang == "ar" ? TextAlign.right : TextAlign.left,
+                style: TextStyle(
+                    // fontWeight: FontWeight.bold,
+                    fontSize: 17.0)))
+      ],
+    );
+  }
+}
+
 class ChallengeDetails extends StatelessWidget {
   final Challenge challenge;
   final Color cardColor;
@@ -42,7 +93,6 @@ class ChallengeDetails extends StatelessWidget {
       child: ListTile(
         trailing: cardIcon,
         onTap: () {
-          print("tapped ${answer.text}");
           answerCallback(answer.id);
         },
         enabled: !challenge.isAnswered() && !challenge.isRevealed(),
@@ -59,18 +109,20 @@ class ChallengeDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    // Widget enContainer = getEnglishContainer(containerWidth);
+    // Widget arContainer = getArabicContainer(containerWidth);
     return Hero(
-        flightShuttleBuilder: (
-          BuildContext flightContext,
-          Animation<double> animation,
-          HeroFlightDirection flightDirection,
-          BuildContext fromHeroContext,
-          BuildContext toHeroContext,
-        ) {
-          return SingleChildScrollView(
-            child: fromHeroContext.widget,
-          );
-        },
+        // flightShuttleBuilder: (
+        //   BuildContext flightContext,
+        //   Animation<double> animation,
+        //   HeroFlightDirection flightDirection,
+        //   BuildContext fromHeroContext,
+        //   BuildContext toHeroContext,
+        // ) {
+        //   return SingleChildScrollView(
+        //     child: fromHeroContext.widget,
+        //   );
+        // },
         tag: "ScriptureTag-${challenge.id}",
         child: Card(
             color: cardColor,
@@ -80,29 +132,30 @@ class ChallengeDetails extends StatelessWidget {
                     padding: EdgeInsets.all(20.0),
                     children: <Widget>[
                   Divider(color: Theme.of(context).accentColor),
-                  Text.rich(
-                      TextSpan(
-                        text: challenge.scripture.getText() + "\n",
-                      ),
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 17.0)),
-                  Text.rich(
-                      TextSpan(
-                        text: challenge.scripture.reference,
-                      ),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 17.0)),
+                  // Container(
+                  //   height: 500,
+                  //   child: ListView(
+                  //       shrinkWrap: true,
+                  //       scrollDirection: Axis.horizontal,
+                  //       children: <Widget>[
+                  //         enContainer,
+                  //         VerticalDivider(color: Theme.of(context).accentColor),
+                  //         arContainer
+                  //       ]),
+                  // ),
+                  Reading(challenge: challenge, lang: "ar"),
                   Divider(color: Theme.of(context).accentColor),
-                  Text.rich(
-                    TextSpan(
-                      text: challenge.question,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  Reading(challenge: challenge, lang: "en"),
                   Divider(color: Theme.of(context).accentColor),
+                  Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text.rich(
+                          TextSpan(
+                            text: challenge.question,
+                          ),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 17.0))),
+                  // Divider(color: Theme.of(context).accentColor),
                   Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: challenge.answers

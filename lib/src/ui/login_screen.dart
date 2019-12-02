@@ -175,17 +175,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-const List<Color> greenGradients = [
-  Colors.lightGreen,
-  Colors.green,
-];
-
-const List<Color> orangeGradients = [
-  Color(0xFFFF9844),
-  Color(0xFFFE8853),
-  Color(0xFFFD7267),
-];
-
 class WavyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -194,7 +183,10 @@ class WavyHeader extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: greenGradients,
+              colors: [
+                Colors.lightGreen,
+                Theme.of(context).primaryColor
+              ],
               begin: Alignment.topLeft,
               end: Alignment.center),
         ),
@@ -212,7 +204,11 @@ class WavyFooter extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: orangeGradients,
+              colors: [
+                Color(0xFFFF9844),
+                Color(0xFFFE8853),
+                Color(0xFFFD7267),
+              ],
               begin: Alignment.center,
               end: Alignment.bottomRight),
         ),

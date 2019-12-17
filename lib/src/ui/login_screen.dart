@@ -70,7 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
     String code = await FlutterBarcodeScanner.scanBarcode(
         "#" + Theme.of(context).primaryColor.value.toRadixString(16),
         "Cancel",
-        false);
+        false,
+        ScanMode.QR);
 
     final isValidCode = await UserNetworkService.isValidCode(code);
 
@@ -79,7 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       Scaffold.of(scaffoldContext).showSnackBar(new SnackBar(
         backgroundColor: Colors.redAccent,
-        content: new Text("Ops! Invalid Code"),
+        content: new Text(
+          "Ops! Invalid Code",
+          style: TextStyle(color: Colors.white),
+        ),
       ));
       setState(() {
         _showScanCodeButton = true;

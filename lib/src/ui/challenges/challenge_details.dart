@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/challenge.dart';
+import 'package:ch_app/src/models/challenge.dart';
 
 typedef AnswerCallback = Function(int answerId);
 

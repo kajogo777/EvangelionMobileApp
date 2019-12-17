@@ -3,8 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'dart:convert';
-import '../models/challenge.dart';
-import '../models/user.dart';
+import 'package:ch_app/src/models/challenge.dart';
+import 'package:ch_app/src/models/user.dart';
 
 // const BASE_URL = "http://192.168.43.24:8000/api/";
 // const BASE_URL = "http://192.168.1.145:8000/api/";

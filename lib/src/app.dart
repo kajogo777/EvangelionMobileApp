@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'data/repositories.dart';
 import 'ui/login_screen.dart';
-import 'ui/main_screen.dart';
-import 'ui/challenge_screen.dart';
-import 'ui/mood_screen.dart';
-import 'ui/issue_screen.dart';
+import 'ui/main/main_screen.dart';
+import 'ui/challenges/challenge_screen.dart';
+import 'ui/moods/mood_screen.dart';
+import 'ui/issues/issue_screen.dart';
 
 class App extends StatelessWidget {
   @override

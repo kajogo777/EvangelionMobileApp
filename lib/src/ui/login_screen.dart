@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import '../data/services.dart';
+import 'package:ch_app/src/data/services.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -183,10 +183,7 @@ class WavyHeader extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [
-                Colors.lightGreen,
-                Theme.of(context).primaryColor
-              ],
+              colors: [Colors.lightGreen, Theme.of(context).primaryColor],
               begin: Alignment.topLeft,
               end: Alignment.center),
         ),
@@ -203,14 +200,11 @@ class WavyFooter extends StatelessWidget {
       clipper: FooterWaveClipper(),
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [
-                Color(0xFFFF9844),
-                Color(0xFFFE8853),
-                Color(0xFFFD7267),
-              ],
-              begin: Alignment.center,
-              end: Alignment.bottomRight),
+          gradient: LinearGradient(colors: [
+            Color(0xFFFF9844),
+            Color(0xFFFE8853),
+            Color(0xFFFD7267),
+          ], begin: Alignment.center, end: Alignment.bottomRight),
         ),
         height: MediaQuery.of(context).size.height / 3,
       ),

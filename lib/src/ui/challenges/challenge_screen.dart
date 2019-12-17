@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../models/challenge.dart';
-import '../ui/challenge_details.dart';
+import 'package:ch_app/src/models/challenge.dart';
+import './challenge_details.dart';
 import 'package:ch_app/src/blocs/blocs.dart';
 
 class ChallengeScreen extends StatefulWidget {
@@ -202,6 +202,16 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     final int starCount = rewards.fold(0, (count, reward) {
       return reward != null ? count + 1 : count;
     });
+    final intRegex = RegExp(r'\s*(\d+)\s*');
+    final int score = rewards.fold(0, (count, reward) {
+      if (reward != null) {
+        final rewardScore = intRegex.firstMatch(reward.name);
+        if (rewardScore != null) {
+          return count + int.parse(rewardScore.group(0));
+        }
+      }
+      return count;
+    });
     return Column(
       children: <Widget>[
         new ListTile(
@@ -229,7 +239,19 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
           crossAxisSpacing: 5.0,
           crossAxisCount: 3,
           children: rewards.map((reward) => _buildRewardCard(reward)).toList(),
-        ))
+        )),
+        new ListTile(
+            leading: Text.rich(
+              TextSpan(
+                  text: "Total Score"), //getColorNameFromColor(color).getName),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20),
+            ),
+            trailing: Text.rich(
+              TextSpan(text: "$score"), //getColorNameFromColor(color).getName),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20),
+            )),
       ],
     );
     // return GridView.count(

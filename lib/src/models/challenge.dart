@@ -8,6 +8,8 @@ class Challenge {
   final Reward reward;
   final List<Answer> answers;
   final Response response;
+  final bool active;
+  final bool expired;
 
   Challenge(
       {this.id,
@@ -16,7 +18,9 @@ class Challenge {
       this.scripture,
       this.reward,
       this.answers,
-      this.response});
+      this.response,
+      this.active,
+      this.expired});
 
   factory Challenge.fromJson(Map<String, dynamic> data) {
     final date = DateTime.parse(data['active_date']);
@@ -24,6 +28,8 @@ class Challenge {
     return Challenge(
         id: data['id'],
         activeDate: DateTime(date.year, date.month, date.day),
+        active: data['active'],
+        expired: data['expired'],
         question: data['question'],
         scripture: Scripture.fromJson(data['scripture']),
         reward: Reward.fromJson(data['reward']),
@@ -39,6 +45,8 @@ class Challenge {
     return Challenge(
         id: this.id,
         question: this.question,
+        expired: this.expired,
+        active: this.active,
         activeDate: DateTime(
             this.activeDate.year, this.activeDate.month, this.activeDate.day),
         scripture: this.scripture.copy(),
@@ -52,8 +60,7 @@ class Challenge {
   }
 
   bool isRevealed() {
-    final now = DateTime.now();
-    return this.activeDate.isBefore(DateTime(now.year, now.month, now.day));
+    return this.expired;
   }
 
   bool isAnsweredCorrectly() {
@@ -118,8 +125,9 @@ class Scripture {
 class Reward {
   final String name;
   final Color color;
+  final int score;
 
-  Reward({this.name, this.color});
+  Reward({this.name, this.color, this.score});
 
   factory Reward.fromJson(Map<String, dynamic> data) {
     String hexColor = data['color'].toUpperCase().replaceAll("#", "");
@@ -128,14 +136,14 @@ class Reward {
     }
 
     return Reward(
-        name: data['name'], color: Color(int.parse(hexColor, radix: 16)));
+        name: data['name'],
+        color: Color(int.parse(hexColor, radix: 16)),
+        score: data['score']);
   }
 
   Reward copy() {
     return Reward(
-      name: this.name,
-      color: new Color(this.color.value),
-    );
+        name: this.name, color: new Color(this.color.value), score: this.score);
   }
 }
 

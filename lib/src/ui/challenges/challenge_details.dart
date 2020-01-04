@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ch_app/src/models/challenge.dart';
+import 'package:ch_app/src/data/services.dart';
 
 typedef AnswerCallback = Function(int answerId);
 
@@ -93,6 +94,7 @@ class ChallengeDetails extends StatelessWidget {
       child: ListTile(
         trailing: cardIcon,
         onTap: () {
+          NotificationService.updatePeriodicNotification();
           answerCallback(answer.id);
         },
         enabled: !challenge.isAnswered() && !challenge.isRevealed(),

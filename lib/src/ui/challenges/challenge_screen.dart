@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:ch_app/src/models/challenge.dart';
 import './challenge_details.dart';
 import 'package:ch_app/src/blocs/blocs.dart';
@@ -177,11 +178,27 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Icon(
-                Icons.star,
-                size: 30.0,
-                color: textColor,
-              ),
+              // Icon(
+              //   Icons.star,
+              //   size: 30.0,
+              //   color: textColor,
+              // ),
+              reward.score == 0
+                  ? Icon(
+                      Icons.star,
+                      size: 30.0,
+                      color: textColor,
+                    )
+                  : Text.rich(
+                      TextSpan(
+                          text: NumberFormat.compact().format(reward
+                              .score)), // "${reward.score}"), //getColorNameFromColor(color).getName),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: textColor,
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold),
+                    ),
               Text.rich(
                 TextSpan(
                     text: reward.name), //getColorNameFromColor(color).getName),
@@ -202,15 +219,11 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     final int starCount = rewards.fold(0, (count, reward) {
       return reward != null ? count + 1 : count;
     });
-    final intRegex = RegExp(r'\s*(\d+)\s*');
-    final int score = rewards.fold(0, (count, reward) {
+    final int score = rewards.fold(0, (sum, reward) {
       if (reward != null) {
-        final rewardScore = intRegex.firstMatch(reward.name);
-        if (rewardScore != null) {
-          return count + int.parse(rewardScore.group(0));
-        }
+        return sum + reward.score;
       }
-      return count;
+      return sum;
     });
     return Column(
       children: <Widget>[
@@ -248,7 +261,9 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
               style: TextStyle(fontSize: 20),
             ),
             trailing: Text.rich(
-              TextSpan(text: "$score"), //getColorNameFromColor(color).getName),
+              TextSpan(
+                  text: NumberFormat()
+                      .format(score)), //getColorNameFromColor(color).getName),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 20),
             )),

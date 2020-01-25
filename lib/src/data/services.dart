@@ -107,7 +107,7 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  static final int default_hour = 6;
+  static final int default_hour = 18;
   static final int default_minute = 0;
 
   static Future<void> initializeReminders() async {

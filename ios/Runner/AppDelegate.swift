@@ -10,9 +10,9 @@ import Flutter
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
     }
-    if(![[NSUserDefaults standardUserDefaults]objectForKey:@"Notification"]){
-        [[UIApplication sharedApplication] cancelAllLocalNotifications];
-        [[NSUserDefaults standardUserDefaults]setBool:YES forKey:@"Notification"];
+    if(!UserDefaults.standard.bool(forKey: "Notification")) {
+        UIApplication.shared.cancelAllLocalNotifications()
+        UserDefaults.standard.set(true, forKey: "Notification")
     }
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

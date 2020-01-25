@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'data/repositories.dart';
 import 'ui/login_screen.dart';
 import 'ui/main/main_screen.dart';
+import 'ui/main/connectivity.dart';
 import 'ui/challenges/challenge_screen.dart';
 import 'ui/moods/mood_screen.dart';
 import 'ui/issues/issue_screen.dart';
@@ -21,14 +22,15 @@ class App extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginScreen(),
-        '/main': (context) => MainScreen(),
-        '/challenges': (context) => BlocProvider(
+        '/': (context) => RequireConnectivity(child: LoginScreen()),
+        '/main': (context) => RequireConnectivity(child: MainScreen()),
+        '/challenges': (context) => RequireConnectivity(
+                child: BlocProvider(
               builder: (context) => ChallengeBloc(
                   challengeRepository:
                       RepositoryProvider.of<ChallengeRepository>(context)),
               child: ChallengeScreen(),
-            ),
+            )),
         '/moods': (context) => MoodScreen(),
         '/issues': (context) => IssueScreen(),
       },

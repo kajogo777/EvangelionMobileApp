@@ -1,11 +1,11 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/gogodev/Desktop/Projects/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/gogodev/Desktop/Projects/bible-study-mobile"
-export "FLUTTER_TARGET=/Users/gogodev/Desktop/Projects/bible-study-mobile/lib/main.dart"
+export "FLUTTER_ROOT=/Users/georgesedky/Development/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/georgesedky/Development/EvangelionMobileApp"
+export "FLUTTER_TARGET=/Users/georgesedky/Development/EvangelionMobileApp/lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "SYMROOT=${SOURCE_ROOT}/../build/ios"
-export "FLUTTER_FRAMEWORK_DIR=/Users/gogodev/Desktop/Projects/flutter/bin/cache/artifacts/engine/ios"
+export "FLUTTER_FRAMEWORK_DIR=/Users/georgesedky/Development/flutter/bin/cache/artifacts/engine/ios"
 export "FLUTTER_BUILD_NAME=0.1.6"
 export "FLUTTER_BUILD_NUMBER=8"
 export "TRACK_WIDGET_CREATION=true"

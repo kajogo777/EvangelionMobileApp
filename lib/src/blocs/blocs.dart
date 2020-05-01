@@ -14,7 +14,9 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 // EVENTS
 abstract class ChallengeEvent extends Equatable {
-  ChallengeEvent([List props = const []]) : super(props);
+  // ChallengeEvent([List props = const []]) : super(props);
+  @override
+  List<Object> get props => [];
 }
 
 class FetchChallengesEvent extends ChallengeEvent {}
@@ -25,13 +27,17 @@ class SubmitResponseEvent extends ChallengeEvent {
 
   SubmitResponseEvent({@required this.challengeId, @required this.answerId})
       : assert(challengeId != null),
-        assert(answerId != null),
-        super([challengeId, answerId]);
+        assert(answerId != null);
+
+  @override
+  List<Object> get props => super.props..addAll([challengeId,answerId]);
 }
 
 // STATES
 abstract class ChallengeState extends Equatable {
-  ChallengeState([List props = const []]) : super(props);
+  // ChallengeState([List props = const []]) : super(props);
+  @override
+  List<Object> get props => [];
 }
 
 class ChallengeEmpty extends ChallengeState {}
@@ -42,8 +48,10 @@ class ChallengeLoaded extends ChallengeState {
   final List<Challenge> challenges;
 
   ChallengeLoaded({@required this.challenges})
-      : assert(challenges != null),
-        super([challenges]);
+      : assert(challenges != null);
+
+  @override
+  List<Object> get props => super.props..addAll([challenges]);
 }
 
 class ChallengeError extends ChallengeState {}
@@ -60,10 +68,12 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
 
   @override
   Stream<ChallengeState> mapEventToState(ChallengeEvent event) async* {
+    final currentState = state;
+
     List<Challenge> currentChallenges = [];
 
     if (currentState is ChallengeLoaded)
-      currentChallenges = (currentState as ChallengeLoaded).challenges;
+      currentChallenges = currentState.challenges;
 
     yield ChallengeLoading();
 

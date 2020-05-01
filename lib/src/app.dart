@@ -26,7 +26,7 @@ class App extends StatelessWidget {
         '/main': (context) => RequireConnectivity(child: MainScreen()),
         '/challenges': (context) => RequireConnectivity(
                 child: BlocProvider(
-              builder: (context) => ChallengeBloc(
+              create: (context) => ChallengeBloc(
                   challengeRepository:
                       RepositoryProvider.of<ChallengeRepository>(context)),
               child: ChallengeScreen(),

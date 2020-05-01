@@ -35,7 +35,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       body: Center(child:
           BlocBuilder<ChallengeBloc, ChallengeState>(builder: (context, state) {
         if (state is ChallengeEmpty) {
-          challengeBloc.dispatch(FetchChallengesEvent());
+          challengeBloc.add(FetchChallengesEvent());
           return SizedBox.shrink();
         } else if (state is ChallengeLoading) {
           return CircularProgressIndicator(
@@ -123,7 +123,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                       cardColor: cardColor,
                       answerCallback: (answerId) {
                         Navigator.pop(context);
-                        challengeBloc.dispatch(SubmitResponseEvent(
+                        challengeBloc.add(SubmitResponseEvent(
                             challengeId: challenge.id, answerId: answerId));
                       }),
                 ),

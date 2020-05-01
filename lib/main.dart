@@ -13,7 +13,7 @@ void main() {
   NotificationService.initializeReminders();
 
   runApp(RepositoryProvider(
-    builder: (context) => ChallengeRepository(),
+    create: (context) => ChallengeRepository(),
     child: App(),
   ));
 }

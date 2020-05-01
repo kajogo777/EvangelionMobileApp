@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:ch_app/src/data/services.dart';
 
+import '../data/services.dart';
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -112,6 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _skipLogin() async {
+    // await SecureStorageService.setAccessCode('6RcUTQbCg0');
     final code = await SecureStorageService.getAccessCode();
     if (code != null && await UserNetworkService.isValidCode(code)) {
       Navigator.pushReplacementNamed(context, '/main');

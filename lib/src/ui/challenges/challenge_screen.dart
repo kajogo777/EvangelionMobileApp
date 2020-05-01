@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -46,14 +44,14 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
         } else if (state is ChallengeError) {
           return Text("Something Wrong Happened");
         } else if (state is ChallengeLoaded) {
-          final List<Challenge> challenges = state.challenges;
-          final List<Reward> rewards = challenges
+          final List<Reward> rewards = state.challenges
               .map((challenge) =>
                   challenge.isAnsweredCorrectly() ? challenge.reward : null)
               .toList();
           return _viewRewardBoard
               ? _buildRewardBoard(rewards, state.score)
-              : _buildChallengeList(challenges, challengeBloc);
+              : _buildChallengeList(
+                  state.challenges, challengeBloc);
         }
         return null;
       })),
@@ -151,7 +149,8 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                 ))));
   }
 
-  Widget _buildChallengeList(List<Challenge> challenges, challengeBloc) {
+  Widget _buildChallengeList(
+      List<Challenge> challenges, challengeBloc) {
     if (challenges.length == 0) {
       return Text.rich(
           TextSpan(
@@ -163,9 +162,11 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       padding: const EdgeInsets.all(5.0),
       itemCount: challenges.length,
       itemBuilder: (context, index) {
-        return index < challenges.length
-            ? _buildChallengeCard(challenges[index], challengeBloc)
-            : null;
+        if (index < challenges.length) {
+          return _buildChallengeCard(challenges[index], challengeBloc);
+        } else {
+          return null;
+        }
       },
     );
   }

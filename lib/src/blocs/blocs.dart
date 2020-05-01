@@ -85,7 +85,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
 
     if (event is FetchChallengesEvent) {
       final List<Challenge> challenges =
-          await challengeRepository.getAllChallenges();
+          await challengeRepository.getChallenges(20,0);
       final Score score = await challengeRepository.fetchScore();
       yield ChallengeLoaded(challenges: challenges, score: score);
     } else if (event is SubmitResponseEvent) {

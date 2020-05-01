@@ -11,6 +11,12 @@ class ChallengeRepository {
     return challengeList;
   }
 
+  Future<List<Challenge>> getChallenges(int limit, int offset) async {
+    List<Challenge> challengeList =
+        await ChallengeNetworkService.fetchChallenges(limit=limit, offset=offset);
+    return challengeList;
+  }
+
   Future<Response> postAnswer(int challengeId, int answerId) async {
     Response response =
         await ResponseNetworkService.submitResponse(challengeId, answerId);

@@ -10,8 +10,8 @@ import 'package:ch_app/src/models/user.dart';
 import 'package:ch_app/src/models/score.dart';
 
 
-// const BASE_URL = "http://192.168.99.100/api/";
-const BASE_URL = "https://evangelion.stmary-rehab.com/api/";
+// const BASE_URL = "http://192.168.99.100/api";
+const BASE_URL = "https://evangelion.stmary-rehab.com/api";
 
 class SecureStorageService {
   static final _storage = new FlutterSecureStorage();
@@ -40,11 +40,11 @@ class SecureStorageService {
 }
 
 class NetworkService {
-  static dynamic getResource(String path) async {
+  static dynamic getResource(String path, [int limit=30, int offset=0]) async {
     final accessCode = await SecureStorageService.getAccessCode();
 
-    final response = await http.get(BASE_URL + path + "/",
-        headers: {HttpHeaders.authorizationHeader: "Bearer " + accessCode});
+    final response = await http.get("$BASE_URL/$path/?limit=$limit&offset=$offset",
+        headers: {HttpHeaders.authorizationHeader: "Bearer $accessCode"});
 
     if (response.statusCode != 200)
       throw Exception(
@@ -56,9 +56,9 @@ class NetworkService {
   static dynamic postResource(String path, Map<String, dynamic> data) async {
     final accessCode = await SecureStorageService.getAccessCode();
 
-    final response = await http.post(BASE_URL + path + "/",
+    final response = await http.post("$BASE_URL/$path/",
         headers: {
-          HttpHeaders.authorizationHeader: "Bearer " + accessCode,
+          HttpHeaders.authorizationHeader: "Bearer $accessCode",
           HttpHeaders.contentTypeHeader: "application/json"
         },
         body: json.encode(data));
@@ -73,8 +73,8 @@ class NetworkService {
 
 class UserNetworkService {
   static Future<bool> isValidCode(String accessCode) async {
-    final response = await http.get(BASE_URL + 'users',
-        headers: {HttpHeaders.authorizationHeader: "Bearer " + accessCode});
+    final response = await http.get("$BASE_URL/users/",
+        headers: {HttpHeaders.authorizationHeader: "Bearer $accessCode"});
     return response.statusCode == 200;
   }
 
@@ -85,8 +85,8 @@ class UserNetworkService {
 }
 
 class ChallengeNetworkService {
-  static Future<List<Challenge>> fetchChallenges() async {
-    final data = await NetworkService.getResource("challenges");
+  static Future<List<Challenge>> fetchChallenges([int limit = 30, offset = 0]) async {
+    final data = await NetworkService.getResource("challenges", limit=limit, offset=offset);
     final List<Challenge> challengeList = (data['results'] as List)
         .map((challenge) => Challenge.fromJson(challenge))
         .toList();

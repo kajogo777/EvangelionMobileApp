@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ch_app/src/models/challenge.dart';
+import 'package:ch_app/src/models/score.dart';
 import './challenge_details.dart';
 import 'package:ch_app/src/blocs/blocs.dart';
 
@@ -49,7 +52,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                   challenge.isAnsweredCorrectly() ? challenge.reward : null)
               .toList();
           return _viewRewardBoard
-              ? _buildRewardBoard(rewards)
+              ? _buildRewardBoard(rewards, state.score)
               : _buildChallengeList(challenges, challengeBloc);
         }
         return null;
@@ -215,66 +218,88 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     }
   }
 
-  Widget _buildRewardBoard(List<Reward> rewards) {
-    final int starCount = rewards.fold(0, (count, reward) {
-      return reward != null ? count + 1 : count;
-    });
-    final int score = rewards.fold(0, (sum, reward) {
-      if (reward != null) {
-        return sum + reward.score;
-      }
-      return sum;
-    });
+  Widget _scoreView(String title, int count, int totalCount, int score) {
+    final String formatedScore = NumberFormat().format(score);
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text.rich(
+            TextSpan(text: title), //getColorNameFromColor(color).getName),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Text.rich(
+            TextSpan(
+                text:
+                    "$count/$totalCount"), //getColorNameFromColor(color).getName),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor),
+          ),
+          Text.rich(
+            TextSpan(
+                text: formatedScore), //getColorNameFromColor(color).getName),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          )
+        ]);
+  }
+
+  Widget _buildRewardBoard(List<Reward> rewards, Score score) {
     return Column(
       children: <Widget>[
-        new ListTile(
-            leading: Icon(
-              Icons.star,
-              size: 30.0,
-            ),
-            title: Text.rich(
-              TextSpan(
-                  text: "Token Count"), //getColorNameFromColor(color).getName),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
-            ),
-            trailing: Text.rich(
-              TextSpan(
-                  text:
-                      "$starCount/${rewards.length}"), //getColorNameFromColor(color).getName),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
-            )),
         new Expanded(
+            flex: 1,
             child: GridView.count(
-          primary: false,
-          padding: const EdgeInsets.all(10.0),
-          crossAxisSpacing: 5.0,
-          crossAxisCount: 3,
-          children: rewards.map((reward) => _buildRewardCard(reward)).toList(),
-        )),
-        new ListTile(
-            leading: Text.rich(
-              TextSpan(
-                  text: "Total Score"), //getColorNameFromColor(color).getName),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
-            ),
-            trailing: Text.rich(
-              TextSpan(
-                  text: NumberFormat()
-                      .format(score)), //getColorNameFromColor(color).getName),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
+                physics: NeverScrollableScrollPhysics(),
+                primary: false,
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                crossAxisSpacing: 0.0,
+                mainAxisSpacing: 0.0,
+                crossAxisCount: 3,
+                children: [
+                  _scoreView(
+                      "30 Days",
+                      score.totalCorrectLast30Days,
+                      score.totalChallengesLast30Days,
+                      score.totalScoreLast30Days),
+                  Icon(
+                    Icons.star,
+                    size: 30.0,
+                  ),
+                  _scoreView("All Time", score.totalCorrect,
+                      score.totalChallenges, score.totalScore),
+                ])),
+        Divider(
+          color: Theme.of(context).primaryColor,
+          indent: 10.0,
+          endIndent: 10.0,
+          thickness: 1.0,
+          height: 0,
+          // thickness: 10.0,
+        ),
+        new Expanded(
+            flex: 3,
+            child: GridView.count(
+              primary: false,
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+              crossAxisSpacing: 5.0,
+              mainAxisSpacing: 5.0,
+              crossAxisCount: 3,
+              children:
+                  rewards.map((reward) => _buildRewardCard(reward)).toList(),
             )),
+        Divider(
+          color: Theme.of(context).primaryColor,
+          indent: 10.0,
+          endIndent: 10.0,
+          thickness: 1.0,
+          height: 0.0,
+        ),
+        Divider(height: 20.0, thickness: 0.0, color: Color.fromARGB(0, 0, 0, 0))
       ],
     );
-    // return GridView.count(
-    //   primary: false,
-    //   padding: const EdgeInsets.all(20.0),
-    //   crossAxisSpacing: 10.0,
-    //   crossAxisCount: 3,
-    //   children: rewards.map((reward) => _buildRewardCard(reward)).toList(),
-    // );
   }
 }

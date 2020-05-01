@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ch_app/src/models/challenge.dart';
+import 'package:ch_app/src/models/score.dart';
 import 'package:ch_app/src/data/repositories.dart';
 
 // BLOC DELEGATE
@@ -30,7 +31,7 @@ class SubmitResponseEvent extends ChallengeEvent {
         assert(answerId != null);
 
   @override
-  List<Object> get props => super.props..addAll([challengeId,answerId]);
+  List<Object> get props => super.props..addAll([challengeId, answerId]);
 }
 
 // STATES
@@ -46,12 +47,14 @@ class ChallengeLoading extends ChallengeState {}
 
 class ChallengeLoaded extends ChallengeState {
   final List<Challenge> challenges;
+  final Score score;
 
-  ChallengeLoaded({@required this.challenges})
-      : assert(challenges != null);
+  ChallengeLoaded({@required this.challenges, @required this.score})
+      : assert(challenges != null),
+        assert(score != null);
 
   @override
-  List<Object> get props => super.props..addAll([challenges]);
+  List<Object> get props => super.props..addAll([challenges, score]);
 }
 
 class ChallengeError extends ChallengeState {}
@@ -71,16 +74,20 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     final currentState = state;
 
     List<Challenge> currentChallenges = [];
+    Score currentScore;
 
-    if (currentState is ChallengeLoaded)
+    if (currentState is ChallengeLoaded) {
       currentChallenges = currentState.challenges;
+      currentScore = currentState.score;
+    }
 
     yield ChallengeLoading();
 
     if (event is FetchChallengesEvent) {
       final List<Challenge> challenges =
           await challengeRepository.getAllChallenges();
-      yield ChallengeLoaded(challenges: challenges);
+      final Score score = await challengeRepository.fetchScore();
+      yield ChallengeLoaded(challenges: challenges, score: score);
     } else if (event is SubmitResponseEvent) {
       final Response response = await challengeRepository.postAnswer(
           event.challengeId, event.answerId);
@@ -91,7 +98,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
           return challenge.copyWith(null);
         }
       }).toList();
-      yield ChallengeLoaded(challenges: challenges);
+      yield ChallengeLoaded(challenges: challenges, score: currentScore);
     }
   }
 }

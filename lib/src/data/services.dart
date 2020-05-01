@@ -7,6 +7,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:ch_app/src/models/challenge.dart';
 import 'package:ch_app/src/models/user.dart';
+import 'package:ch_app/src/models/score.dart';
+
 
 // const BASE_URL = "http://192.168.99.100/api/";
 const BASE_URL = "https://evangelion.stmary-rehab.com/api/";
@@ -98,6 +100,13 @@ class ResponseNetworkService {
         new Response(challengeId: challengeId, answerId: answerId).toJson());
     final Response response = Response.fromJson(data, challengeId);
     return response;
+  }
+}
+
+class ScoreNetworkService {
+    static Future<Score> fetchScore() async {
+    final data = await NetworkService.getResource("score");
+    return Score.fromJson(data);
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ch_app/src/models/challenge.dart';
+import 'package:ch_app/src/models/score.dart';
 import 'services.dart';
 
 class ChallengeRepository {
@@ -14,5 +15,9 @@ class ChallengeRepository {
     Response response =
         await ResponseNetworkService.submitResponse(challengeId, answerId);
     return response;
+  }
+
+  Future<Score> fetchScore() async {
+    return await ScoreNetworkService.fetchScore();
   }
 }

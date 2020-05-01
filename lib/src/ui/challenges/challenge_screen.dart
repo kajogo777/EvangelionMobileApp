@@ -138,14 +138,16 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: new ListTile(
-                      title: Text.rich(
-                          TextSpan(
-                            text: challenge.getActiveDateString(),
-                          ),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 17.0)),
-                      trailing: icon),
+                    leading: icon,
+                    title: Text.rich(
+                        TextSpan(
+                          text: challenge.getActiveDateString(),
+                        ),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 17.0)),
+                    trailing: SizedBox(width: 30),
+                  ),
                 ))));
   }
 

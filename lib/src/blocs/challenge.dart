@@ -5,17 +5,9 @@ import 'package:ch_app/src/models/challenge.dart';
 import 'package:ch_app/src/models/score.dart';
 import 'package:ch_app/src/data/repositories.dart';
 
-// BLOC DELEGATE
-class SimpleBlocDelegate extends BlocDelegate {
-  @override
-  onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-  }
-}
 
 // EVENTS
 abstract class ChallengeEvent extends Equatable {
-  // ChallengeEvent([List props = const []]) : super(props);
   @override
   List<Object> get props => [];
 }
@@ -36,7 +28,6 @@ class SubmitResponseEvent extends ChallengeEvent {
 
 // STATES
 abstract class ChallengeState extends Equatable {
-  // ChallengeState([List props = const []]) : super(props);
   @override
   List<Object> get props => [];
 }

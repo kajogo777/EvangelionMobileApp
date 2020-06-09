@@ -1,6 +1,9 @@
 import UIKit
 import Flutter
 
+
+
+
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
@@ -8,10 +11,10 @@ import Flutter
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     if #available(iOS 10.0, *) {
-      UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+      UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
     }
     if(!UserDefaults.standard.bool(forKey: "Notification")) {
-        UIApplication.shared.cancelAllLocalNotifications()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests();
         UserDefaults.standard.set(true, forKey: "Notification")
     }
     GeneratedPluginRegistrant.register(with: self)

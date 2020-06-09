@@ -35,7 +35,7 @@ class _ReadingState extends State<Reading> {
                   TextSpan(
                       text: widget.challenge.scripture.reference[widget.lang]),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0))
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0))
             ])),
         Visibility(
             visible: _show,

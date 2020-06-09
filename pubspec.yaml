@@ -36,6 +36,8 @@ dependencies:
   intl: ^0.16.1
   flutter_offline: "^0.3.0"
   dapackages: ^1.1.1
+  webview_flutter: ^0.3.22+1
+
 
 dev_dependencies:
   flutter_test:

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:ch_app/src/models/challenge.dart';
 import 'package:ch_app/src/models/score.dart';
 import './challenge_details.dart';
-import 'package:ch_app/src/blocs/blocs.dart';
+import 'package:ch_app/src/blocs/challenge.dart';
 
 class ChallengeScreen extends StatefulWidget {
   @override
@@ -20,6 +20,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+          centerTitle: true,
           title: Text(
             "DAILY CHALLENGE",
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -50,8 +51,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
               .toList();
           return _viewRewardBoard
               ? _buildRewardBoard(rewards, state.score)
-              : _buildChallengeList(
-                  state.challenges, challengeBloc);
+              : _buildChallengeList(state.challenges, challengeBloc);
         }
         return null;
       })),
@@ -131,26 +131,31 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
               );
             },
             child: Card(
-                elevation: 5, //challenge.isAnswered() ? 20 : 1,
+                elevation: 3,
                 color: cardColor,
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: new ListTile(
                     leading: icon,
-                    title: Text.rich(
+                    subtitle: Text.rich(
                         TextSpan(
                           text: challenge.getActiveDateString(),
                         ),
                         textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 15.0)),
+                    title: Text.rich(
+                        TextSpan(
+                          text: challenge.scripture.reference['ar'],
+                        ),
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 17.0)),
+                            fontWeight: FontWeight.bold, fontSize: 20.0)),
                     trailing: SizedBox(width: 30),
                   ),
                 ))));
   }
 
-  Widget _buildChallengeList(
-      List<Challenge> challenges, challengeBloc) {
+  Widget _buildChallengeList(List<Challenge> challenges, challengeBloc) {
     if (challenges.length == 0) {
       return Text.rich(
           TextSpan(
@@ -179,7 +184,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
               0.5;
       Color textColor = isBrightColor ? Colors.black : Colors.white;
       return Card(
-          elevation: 5,
+          elevation: 3,
           color: color,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

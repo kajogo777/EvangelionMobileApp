@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'package:ch_app/src/models/challenge.dart';
 import 'package:ch_app/src/models/user.dart';
 import 'package:ch_app/src/models/score.dart';
-
+import 'package:ch_app/src/models/post.dart';
 
 // const BASE_URL = "http://192.168.99.100/api";
 const BASE_URL = "https://evangelion.stmary-rehab.com/api";
@@ -40,10 +40,26 @@ class SecureStorageService {
 }
 
 class NetworkService {
-  static dynamic getResource(String path, [int limit=30, int offset=0]) async {
+  static dynamic listResource(String path,
+      [int limit = 30, int offset = 0]) async {
     final accessCode = await SecureStorageService.getAccessCode();
 
-    final response = await http.get("$BASE_URL/$path/?limit=$limit&offset=$offset",
+    final response = await http.get(
+        "$BASE_URL/$path/?limit=$limit&offset=$offset",
+        headers: {HttpHeaders.authorizationHeader: "Bearer $accessCode"});
+
+    if (response.statusCode != 200)
+      throw Exception(
+          "Network GET request returned a non 200 status code: ${response.statusCode}");
+    String body = utf8.decode(response.bodyBytes);
+    return json.decode(body);
+  }
+
+  static dynamic getResource(String path) async {
+    final accessCode = await SecureStorageService.getAccessCode();
+
+    final response = await http.get(
+        "$BASE_URL/$path/",
         headers: {HttpHeaders.authorizationHeader: "Bearer $accessCode"});
 
     if (response.statusCode != 200)
@@ -85,8 +101,10 @@ class UserNetworkService {
 }
 
 class ChallengeNetworkService {
-  static Future<List<Challenge>> fetchChallenges([int limit = 30, offset = 0]) async {
-    final data = await NetworkService.getResource("challenges", limit=limit, offset=offset);
+  static Future<List<Challenge>> fetchChallenges(
+      [int limit = 30, offset = 0]) async {
+    final data = await NetworkService.listResource(
+        "challenges", limit = limit, offset = offset);
     final List<Challenge> challengeList = (data['results'] as List)
         .map((challenge) => Challenge.fromJson(challenge))
         .toList();
@@ -104,9 +122,26 @@ class ResponseNetworkService {
 }
 
 class ScoreNetworkService {
-    static Future<Score> fetchScore() async {
+  static Future<Score> fetchScore() async {
     final data = await NetworkService.getResource("score");
     return Score.fromJson(data);
+  }
+}
+
+class PostNetworkService {
+  static Future<List<ConcisePost>> fetchPosts(
+      [int limit = 30, offset = 0]) async {
+    final data = await NetworkService.listResource(
+        "posts", limit = limit, offset = offset);
+    final List<ConcisePost> posts = (data['results'] as List)
+        .map((post) => ConcisePost.fromJson(post))
+        .toList();
+    return posts;
+  }
+
+  static Future<Post> fetchPost(int postId) async {
+    final data = await NetworkService.getResource("posts/$postId");
+    return Post.fromJson(data);
   }
 }
 

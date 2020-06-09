@@ -5,10 +5,12 @@ class MoodScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           "MOODS",
           style: TextStyle(fontWeight: FontWeight.bold),
-        ),      ),
+        ),
+      ),
       body: Center(
         child: Text('Comming Soon!'),
       ),

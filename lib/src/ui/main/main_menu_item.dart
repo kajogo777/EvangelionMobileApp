@@ -126,7 +126,7 @@ class MainPageItem extends StatelessWidget {
           child: Material(
             // shadowColor: Theme.of(context).primaryColor,
             shadowColor: Colors.white,
-            elevation: 5.0,
+            elevation: 3.0,
             // borderRadius: BorderRadius.circular(8.0),
             child: Stack(
               fit: StackFit.expand,

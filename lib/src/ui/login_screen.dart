@@ -114,7 +114,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _skipLogin() async {
-    // await SecureStorageService.setAccessCode('6RcUTQbCg0');
     final code = await SecureStorageService.getAccessCode();
     if (code != null && await UserNetworkService.isValidCode(code)) {
       Navigator.pushReplacementNamed(context, '/main');

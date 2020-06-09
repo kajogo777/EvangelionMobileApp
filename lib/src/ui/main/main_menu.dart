@@ -10,11 +10,11 @@ final menuItems = <ReadingModeItem>[
       imageUrl: 'assets/gideon.jpg',
       enabled: true),
   new ReadingModeItem(
-      description: 'Jesus have already been there.',
-      title: 'ISSUES\n(coming soon)',
-      path: '/issues',
+      description: 'Your spiritual mailbox.',
+      title: 'POSTS',
+      path: '/posts',
       imageUrl: 'assets/imprisoned.jpg',
-      enabled: false),
+      enabled: true),
   new ReadingModeItem(
       description: 'God knows how you feel.',
       title: 'MOODS\n(coming soon)',

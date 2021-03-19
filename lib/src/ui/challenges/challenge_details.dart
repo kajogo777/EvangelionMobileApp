@@ -94,7 +94,7 @@ class ChallengeDetails extends StatelessWidget {
       child: ListTile(
         trailing: cardIcon,
         onTap: () {
-          NotificationService.updatePeriodicNotification();
+          // NotificationService.updatePeriodicNotification();
           answerCallback(answer.id);
         },
         enabled: !challenge.isAnswered() && !challenge.isRevealed(),

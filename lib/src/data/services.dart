@@ -9,6 +9,8 @@ import 'package:ch_app/src/models/challenge.dart';
 import 'package:ch_app/src/models/user.dart';
 import 'package:ch_app/src/models/score.dart';
 import 'package:ch_app/src/models/post.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 // const BASE_URL = "http://192.168.99.100/api";
 const BASE_URL = "https://evangelion.stmary-rehab.com/api";
@@ -58,8 +60,7 @@ class NetworkService {
   static dynamic getResource(String path) async {
     final accessCode = await SecureStorageService.getAccessCode();
 
-    final response = await http.get(
-        "$BASE_URL/$path/",
+    final response = await http.get("$BASE_URL/$path/",
         headers: {HttpHeaders.authorizationHeader: "Bearer $accessCode"});
 
     if (response.statusCode != 200)
@@ -149,86 +150,108 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  static final int default_hour = 18;
-  static final int default_minute = 0;
+  // static final int default_hour = 18;
+  // static final int default_minute = 0;
 
   static Future<void> initializeReminders() async {
-    // Future onSelectNotification(String payload) async {
-    //   if (payload != null) {
-    //     debugPrint('notification payload: ' + payload);
-    //   }
-    //   await Navigator.push(
-    //     context,
-    //     new MaterialPageRoute(builder: (context) => new SecondScreen(payload)),
-    //   );
-    // }
-
-    // Future onDidReceiveLocalNotification(
-    //     int id, String title, String body, String payload) {}
-
     WidgetsFlutterBinding.ensureInitialized();
 
-    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('app_icon');
-    var initializationSettingsIOS =
-        new IOSInitializationSettings(); //onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    final initializationSettingsIOS = new IOSInitializationSettings();
 
-    var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+    final initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
-    flutterLocalNotificationsPlugin.initialize(
-        initializationSettings); //,onSelectNotification: onSelectNotification);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation("Africa/Cairo"));
 
     await schedulePeriodicNotification();
   }
 
-  static Future<void> setReminderTime(int hour, int minute) async {
-    final prefs = await SharedPreferences.getInstance();
+  // static Future<void> setReminderTime(int hour, int minute) async {
+  //   final prefs = await SharedPreferences.getInstance();
 
-    prefs.setInt('notification_hour', hour);
-    prefs.setInt('notification_minute', minute);
-  }
+  //   prefs.setInt('notification_hour', hour);
+  //   prefs.setInt('notification_minute', minute);
+  // }
 
-  static Future<Time> getReminderTime() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('notification_hour') ||
-        !prefs.containsKey('notification_minute')) {
-      await setReminderTime(default_hour, default_minute);
-    }
+  // static Future<Time> getReminderTime() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   if (!prefs.containsKey('notification_hour') ||
+  //       !prefs.containsKey('notification_minute')) {
+  //     await setReminderTime(default_hour, default_minute);
+  //   }
 
-    return Time(prefs.getInt('notification_hour'),
-        prefs.getInt('notification_minute'), 0);
-  }
+  //   return Time(prefs.getInt('notification_hour'),
+  //       prefs.getInt('notification_minute'), 0);
+  // }
 
-  static Future<void> updatePeriodicNotification() async {
-    DateTime now = new DateTime.now();
-    DateTime fewMinsAgo = now.subtract(new Duration(minutes: 10));
-    await setReminderTime(fewMinsAgo.hour, fewMinsAgo.minute);
+  // static Future<void> updatePeriodicNotification() async {
+  //   DateTime now = new DateTime.now();
+  //   DateTime fewMinsAgo = now.subtract(new Duration(minutes: 10));
+  //   await setReminderTime(fewMinsAgo.hour, fewMinsAgo.minute);
 
-    // set new schedule
-    await schedulePeriodicNotification();
-  }
+  //   // set new schedule
+  //   await schedulePeriodicNotification();
+  // }
+
+  // static Future<void> schedulePeriodicNotification() async {
+  //   final reminderTime = await getReminderTime();
+
+  //   var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+  //       'repeating channel id',
+  //       'repeating channel name',
+  //       'repeating description');
+  //   var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+  //   var platformChannelSpecifics = new NotificationDetails(
+  //       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+  //   // cancel old schedule
+  //   await flutterLocalNotificationsPlugin.cancelAll();
+  //   // setup new schedule
+  //   await flutterLocalNotificationsPlugin.showDailyAtTime(
+  //       0,
+  //       'Remember to read the bible today!',
+  //       'it will only take a few minutes',
+  //       reminderTime,
+  //       platformChannelSpecifics);
+  // }
 
   static Future<void> schedulePeriodicNotification() async {
-    final reminderTime = await getReminderTime();
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('repeating channel id',
+            'repeating channel name', 'repeating description');
+    const IOSNotificationDetails iOSPlatformChannelSpecifics =
+        IOSNotificationDetails();
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
 
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'repeating channel id',
-        'repeating channel name',
-        'repeating description');
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-
-    // cancel old schedule
     await flutterLocalNotificationsPlugin.cancelAll();
-    // setup new schedule
-    await flutterLocalNotificationsPlugin.showDailyAtTime(
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
         'Remember to read the bible today!',
         'it will only take a few minutes',
-        reminderTime,
-        platformChannelSpecifics);
+        tz.TZDateTime.local(1999, 1, 1, 15),
+        platformChannelSpecifics,
+        androidAllowWhileIdle: true,
+        matchDateTimeComponents: DateTimeComponents.time,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        1,
+        'Remember to read the bible before you sleep!',
+        'it will only take a few minutes',
+        tz.TZDateTime.local(1999, 1, 1, 21),
+        platformChannelSpecifics,
+        androidAllowWhileIdle: true,
+        matchDateTimeComponents: DateTimeComponents.time,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
 }

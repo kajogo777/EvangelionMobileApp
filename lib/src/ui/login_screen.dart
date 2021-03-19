@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:ch_app/src/data/services.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter/services.dart' show PlatformException;
 
 import '../data/services.dart';
 
@@ -11,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _showScanCodeButton = false;
+  String _uriCode;
+  StreamSubscription _sub;
 
   Future<bool> _confirmUsername(context, name) async {
     return showDialog<bool>(
@@ -113,7 +119,68 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushReplacementNamed(context, '/main');
   }
 
+  _checkCode(code, context) async {
+    setState(() {
+      _showScanCodeButton = false;
+    });
+
+    final isValidCode = await UserNetworkService.isValidCode(code);
+
+    if (isValidCode) {
+      await SecureStorageService.setAccessCode(code);
+    } else {
+      setState(() {
+        _uriCode = null;
+        _showScanCodeButton = true;
+      });
+      return;
+    }
+
+    final user = await UserNetworkService.fetchUser();
+
+    final confirmed = await _confirmUsername(context, user.name);
+
+    if (!confirmed) {
+      SecureStorageService.clear();
+      setState(() {
+        _uriCode = null;
+        _showScanCodeButton = true;
+      });
+      return;
+    }
+
+    Navigator.pushReplacementNamed(context, '/main');
+  }
+
+  Future<Null> initUniLinks() async {
+    String code;
+
+    try {
+      Uri initialUri = await getInitialUri();
+      code = initialUri?.pathSegments?.first;
+      if (code != null)
+        setState(() {
+          _uriCode = code;
+        });
+    } on PlatformException {
+      code = null;
+    } on FormatException {
+      code = null;
+    } on StateError {
+      code = null;
+    }
+
+    _sub = getUriLinksStream().listen((Uri uri) {
+      code = uri?.pathSegments?.first;
+      if (code != null)
+        setState(() {
+          _uriCode = code;
+        });
+    }, onError: (err) {});
+  }
+
   _skipLogin() async {
+    await initUniLinks();
     final code = await SecureStorageService.getAccessCode();
     if (code != null && await UserNetworkService.isValidCode(code)) {
       Navigator.pushReplacementNamed(context, '/main');
@@ -131,7 +198,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_uriCode != null) {
+      _checkCode(_uriCode, context);
+    }
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         backgroundColor: Theme.of(context).primaryColor, //Colors.white,
@@ -166,8 +242,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: TextStyle(fontSize: 20)),
                             color: Colors.blue[900])
                         : Expanded(
-                            child: Container(),
-                          ),
+                            child: new LinearProgressIndicator(
+                                backgroundColor: Colors.blue[900],
+                                valueColor: new AlwaysStoppedAnimation<Color>(
+                                    Colors.blue[300]))),
                     Stack(
                       alignment: Alignment.bottomLeft,
                       children: <Widget>[

@@ -49,5 +49,20 @@
 	<string>Camera permission is required for barcode scanning.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo permission is required for barcode scanning.</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLName</key>
+		<string>evangelion.stmary-rehab.com</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		<string>evangelion</string>
+		</array>
+		</dict>
+	</array>
 </dict>
 </plist>

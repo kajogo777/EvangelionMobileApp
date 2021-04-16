@@ -1,8 +1,8 @@
-import 'dart:io';
-
 import 'package:ch_app/src/models/challenge.dart';
 import 'package:ch_app/src/models/score.dart';
 import 'package:ch_app/src/models/post.dart';
+import 'package:ch_app/src/models/user.dart';
+
 import 'services.dart';
 
 class ChallengeRepository {
@@ -39,5 +39,15 @@ class PostRepository {
 
   Future<Post> fetchPost(int postId) async {
     return await PostNetworkService.fetchPost(postId);
+  }
+}
+
+class ProfileRepository {
+  Future<Score> fetchScore() async {
+    return await ScoreNetworkService.fetchScore();
+  }
+
+  Future<User> fetchUser() async {
+    return await UserNetworkService.fetchUser();
   }
 }

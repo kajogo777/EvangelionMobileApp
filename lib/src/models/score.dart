@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Score {
   final int totalChallenges;
   final int totalAttempted;

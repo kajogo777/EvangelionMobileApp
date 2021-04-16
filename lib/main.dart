@@ -20,6 +20,9 @@ void main() {
       RepositoryProvider<PostRepository>(
         create: (context) => PostRepository(),
       ),
+      RepositoryProvider<ProfileRepository>(
+        create: (context) => ProfileRepository(),
+      ),
     ],
     child: App(),
   ));

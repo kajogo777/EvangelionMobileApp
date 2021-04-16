@@ -8,30 +8,39 @@ class PostsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final postBloc = BlocProvider.of<PostBloc>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "POSTS",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+    return Stack(children: <Widget>[
+      Image.asset(
+        "assets/imprisoned.jpg",
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        fit: BoxFit.cover,
       ),
-      body: Center(
-          child: BlocBuilder<PostBloc, PostState>(builder: (context, state) {
-        if (state is PostEmpty) {
-          postBloc.add(FetchPostsEvent());
-          return SizedBox.shrink();
-        } else if (state is PostLoading) {
-          return CircularProgressIndicator(
-              backgroundColor: Theme.of(context).primaryColor);
-        } else if (state is PostError) {
-          return Text("Something Wrong Happened");
-        } else if (state is PostLoaded) {
-          return _buildPostList(context, state.posts, postBloc);
-        }
-        return null;
-      })),
-    );
+      Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            "POSTS",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        body: Center(
+            child: BlocBuilder<PostBloc, PostState>(builder: (context, state) {
+          if (state is PostEmpty) {
+            postBloc.add(FetchPostsEvent());
+            return SizedBox.shrink();
+          } else if (state is PostLoading) {
+            return CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor);
+          } else if (state is PostError) {
+            return Text("Something Wrong Happened");
+          } else if (state is PostLoaded) {
+            return _buildPostList(context, state.posts, postBloc);
+          }
+          return null;
+        })),
+      )
+    ]);
   }
 }
 
@@ -72,7 +81,7 @@ Widget _buildPostCard(context, ConcisePost post, postBloc) {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                   textDirection: TextDirection.rtl,
                 ),
-                subtitle: Text.rich(TextSpan(text: post.summary),
+                subtitle: Text.rich(TextSpan(text: post.getSummaryWithDate()),
                     style: TextStyle(fontSize: 15.0),
                     textDirection: TextDirection.rtl),
               ))));

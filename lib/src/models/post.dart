@@ -20,6 +20,14 @@ class ConcisePost {
         summary: data['summary'],
         activeDate: DateTime(date.year, date.month, date.day));
   }
+
+  String getActiveDateString() {
+    return "${this.activeDate.year.toString()}-${this.activeDate.month.toString()}-${this.activeDate.day.toString()}";
+  }
+
+  String getSummaryWithDate() {
+    return "${this.summary}\n${this.activeDate.year.toString()}-${this.activeDate.month.toString()}-${this.activeDate.day.toString()}";
+  }
 }
 
 class Post extends ConcisePost {

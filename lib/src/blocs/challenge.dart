@@ -5,7 +5,6 @@ import 'package:ch_app/src/models/challenge.dart';
 import 'package:ch_app/src/models/score.dart';
 import 'package:ch_app/src/data/repositories.dart';
 
-
 // EVENTS
 abstract class ChallengeEvent extends Equatable {
   @override
@@ -38,14 +37,11 @@ class ChallengeLoading extends ChallengeState {}
 
 class ChallengeLoaded extends ChallengeState {
   final List<Challenge> challenges;
-  final Score score;
 
-  ChallengeLoaded({@required this.challenges, @required this.score})
-      : assert(challenges != null),
-        assert(score != null);
+  ChallengeLoaded({@required this.challenges}) : assert(challenges != null);
 
   @override
-  List<Object> get props => super.props..addAll([challenges, score]);
+  List<Object> get props => super.props..addAll([challenges]);
 }
 
 class ChallengeError extends ChallengeState {}
@@ -65,20 +61,17 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
     final currentState = state;
 
     List<Challenge> currentChallenges = [];
-    Score currentScore;
 
     if (currentState is ChallengeLoaded) {
       currentChallenges = currentState.challenges;
-      currentScore = currentState.score;
     }
 
     yield ChallengeLoading();
 
     if (event is FetchChallengesEvent) {
       final List<Challenge> challenges =
-          await challengeRepository.getChallenges(20,0);
-      final Score score = await challengeRepository.fetchScore();
-      yield ChallengeLoaded(challenges: challenges, score: score);
+          await challengeRepository.getChallenges(20, 0);
+      yield ChallengeLoaded(challenges: challenges);
     } else if (event is SubmitResponseEvent) {
       final Response response = await challengeRepository.postAnswer(
           event.challengeId, event.answerId);
@@ -89,7 +82,7 @@ class ChallengeBloc extends Bloc<ChallengeEvent, ChallengeState> {
           return challenge.copyWith(null);
         }
       }).toList();
-      yield ChallengeLoaded(challenges: challenges, score: currentScore);
+      yield ChallengeLoaded(challenges: challenges);
     }
   }
 }
